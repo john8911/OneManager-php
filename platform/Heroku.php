@@ -339,3 +339,7 @@ function setConfigResponse($response)
 {
     return json_decode( $response['body'], true );
 }
+
+function WaitFunction() {
+    return true;
+}
