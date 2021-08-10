@@ -198,6 +198,13 @@ function main($path)
             $url = path_format($_SERVER['PHP_SELF'] . '/');
             return output('<script>alert(\''.getconstStr('SetSecretsFirst').'\');</script>', 302, [ 'Location' => $url ]);
         }
+    if (isset($_GET['WaitFunction'])) {
+        $response = WaitFunction($_GET['WaitFunction']);
+        //var_dump($response);
+        if ($response===true) return output("ok", 200);
+        elseif ($response===false) return output("", 206);
+        else return $response;
+    }
 
     $_SERVER['sitename'] = getConfig('sitename');
     if (empty($_SERVER['sitename'])) $_SERVER['sitename'] = getconstStr('defaultSitename');
@@ -295,6 +302,7 @@ function main($path)
             return $drive->bigfileupload($path1);
         }
     }
+
     if ($_SERVER['admin']) {
         $tmp = adminoperate($path);
         if ($tmp['statusCode'] > 0) {
@@ -1089,12 +1097,6 @@ function adminoperate($path)
         savecache('customTheme', '', '', 1);
         return message('<meta http-equiv="refresh" content="2;URL=./">
         <meta name=viewport content="width=device-width,initial-scale=1">', getconstStr('RefreshCache'), 202);
-    }
-    if (isset($tmpget['WaitFunction'])) {
-        $response = WaitFunction($tmpget['WaitFunction']);
-        if ($response===true) return output("ok", 200);
-        elseif ($response===false) return output("", 206);
-        else return $response;
     }
     return $tmparr;
 }
