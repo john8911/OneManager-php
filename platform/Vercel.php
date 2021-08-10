@@ -75,7 +75,7 @@ function getConfig($str, $disktag = '')
         if (isset($env[$str])) {
             if (isBase64Env($str)) return base64y_decode($env[$str]);
             else return $env[$str];
-	}
+    }
     } else {
         if (isBase64Env($str)) return base64y_decode(getenv($str));
         else return getenv($str);
@@ -163,17 +163,17 @@ function install()
                 $tmp['APIKey'] = $APIKey;
             }
             
-		$projectPath = splitlast(__DIR__, "/")[0];
+        $projectPath = splitlast(__DIR__, "/")[0];
     //$html .= file_get_contents($projectPath . "/.data/config.php") . "<br>";GET /v5/now/deployments  /v8/projects/:id/env
-		$token = $tmp['APIKey'];
-	$header["Authorization"] = "Bearer " . $token;
-	$header["Content-Type"] = "application/json";
-		$aliases = json_decode(curl("GET", "https://api.vercel.com/v3/now/aliases", "", $header)['body'], true);
-		$host = splitfirst($_SERVER["host"], "//")[1];
-		foreach ($aliases["aliases"] as $key => $aliase) {
-			if ($host==$aliase["alias"]) $projectId = $aliase["projectId"];
-		}
-		//$envs = json_decode(curl("GET", "https://api.vercel.com/v8/projects/" . $projectId . "/env", "", $header)['body'], true);
+        $token = $tmp['APIKey'];
+        $header["Authorization"] = "Bearer " . $token;
+        $header["Content-Type"] = "application/json";
+        $aliases = json_decode(curl("GET", "https://api.vercel.com/v3/now/aliases", "", $header)['body'], true);
+        $host = splitfirst($_SERVER["host"], "//")[1];
+        foreach ($aliases["aliases"] as $key => $aliase) {
+            if ($host==$aliase["alias"]) $projectId = $aliase["projectId"];
+        }
+        //$envs = json_decode(curl("GET", "https://api.vercel.com/v8/projects/" . $projectId . "/env", "", $header)['body'], true);
 
             $tmp['HerokuappId'] = $projectId;
             $response = json_decode(setVercelConfig($tmp, $projectId, $APIKey)['body'], true);
@@ -187,15 +187,15 @@ function install()
         expd.setTime(expd.getTime()+1000);
         var expires = "expires="+expd.toGMTString();
         document.cookie=\'language=; path=/; \'+expires;
-	x = 30;
-	function countSecond() 
-	{　
-	    x--;
-	    document.getElementById("displayBox").innerHTML = x;
-	    if (x>0) setTimeout("countSecond()", 1000);
-	}
-	// 执行函数
-	countSecond();
+        x = 30;
+        function countSecond() 
+        {　
+            x--;
+            document.getElementById("displayBox").innerHTML = x;
+            if (x>0) setTimeout("countSecond()", 1000);
+        }
+        // 执行函数
+        countSecond();
     </script>
     <meta http-equiv="refresh" content="30;URL=' . path_format($_SERVER['base_path'] . '/') . '">', 302);
             }
@@ -252,12 +252,12 @@ language:<br>';
         return message($html, $title, 201);
     }
 
-	if (substr($_SERVER["host"], -10)=="vercel.app") {
+    if (substr($_SERVER["host"], -10)=="vercel.app") {
     $html .= '<a href="?install0">' . getconstStr('ClickInstall') . '</a>, ' . getconstStr('LogintoBind');
-	$html .= "<br>Remember: you MUST wait 30-60s after each operate / do some change, that make sure Vercel has done the building<br>" ;
-	} else {
-		$html.= "Please visit form *.vercel.app";
-	}
+    $html .= "<br>Remember: you MUST wait 30-60s after each operate / do some change, that make sure Vercel has done the building<br>" ;
+    } else {
+        $html.= "Please visit form *.vercel.app";
+    }
     $title = 'Install';
     return message($html, $title, 201);
 }
@@ -265,52 +265,54 @@ language:<br>';
 // POST /v8/projects/:id/env
 function setVercelConfig($envs, $appId, $token)
 {
-	$url = "https://api.vercel.com/v8/projects/" . $appId . "/env";
-	$header["Authorization"] = "Bearer " . $token;
-	$header["Content-Type"] = "application/json";
-	$response = curl("GET", $url, "", $header);
-	$result = json_decode($response['body'], true);
-	foreach ($result["envs"] as $key => $value) {
-		$existEnvs[$value["key"]] = $value["id"];
-	}
-	$response = null;
-	foreach ($envs as $key => $value) {
-		$tmp = null;
-		$tmp["type"] = "encrypted";
-		$tmp["key"] = $key;
-		$tmp["value"] = $value;
-		$tmp["target"] = [ "development", "production", "preview" ];
-		if (isset($existEnvs[$key])) {
-			if ($value) $response = curl("PATCH", $url . "/" . $existEnvs[$key], json_encode($tmp), $header);
-			else $response = curl("DELETE", $url . "/" . $existEnvs[$key], "", $header);
-		} else {
-			if ($value) $response = curl("POST", $url, json_encode($tmp), $header);
-		}
-		//echo $key . ":" . $value . ", " . json_encode($response, JSON_PRETTY_PRINT) . "<br>";
-	}
-	return VercelUpdate($appId, $token);
-	//return $response;
+    $url = "https://api.vercel.com/v8/projects/" . $appId . "/env";
+    $header["Authorization"] = "Bearer " . $token;
+    $header["Content-Type"] = "application/json";
+    $response = curl("GET", $url, "", $header);
+    $result = json_decode($response['body'], true);
+    foreach ($result["envs"] as $key => $value) {
+        $existEnvs[$value["key"]] = $value["id"];
+    }
+    $response = null;
+    foreach ($envs as $key => $value) {
+        $tmp = null;
+        $tmp["type"] = "encrypted";
+        $tmp["key"] = $key;
+        $tmp["value"] = $value;
+        $tmp["target"] = [ "development", "production", "preview" ];
+        if (isset($existEnvs[$key])) {
+            if ($value) $response = curl("PATCH", $url . "/" . $existEnvs[$key], json_encode($tmp), $header);
+            else $response = curl("DELETE", $url . "/" . $existEnvs[$key], "", $header);
+        } else {
+            if ($value) $response = curl("POST", $url, json_encode($tmp), $header);
+        }
+        //echo $key . ":" . $value . ", " . json_encode($response, JSON_PRETTY_PRINT) . "<br>";
+    }
+    return VercelUpdate($appId, $token);
+    //return $response;
 }
 
 function VercelUpdate($appId, $token, $sourcePath = "")
 {
-	$url = "https://api.vercel.com/v12/now/deployments";
-	$header["Authorization"] = "Bearer " . $token;
-	$header["Content-Type"] = "application/json";
-	$data["name"] = "OneManager";
-	$data["project"] = $appId;
-	$data["target"] = "production";
-	$data["routes"][0]["src"] = "/(.*)";
-	$data["routes"][0]["dest"] = "/api/index.php";
-	$data["functions"]["api/index.php"]["runtime"] = "vercel-php@0.4.0";
-	if ($sourcePath=="") $sourcePath = splitlast(splitlast(__DIR__, "/")[0], "/")[0];
-	//echo $sourcePath . "<br>";
-	getEachFiles($file, $sourcePath);
-	$data["files"] = $file;
+    $url = "https://api.vercel.com/v12/now/deployments";
+    $header["Authorization"] = "Bearer " . $token;
+    $header["Content-Type"] = "application/json";
+    $data["name"] = "OneManager";
+    $data["project"] = $appId;
+    $data["target"] = "production";
+    $data["routes"][0]["src"] = "/(.*)";
+    $data["routes"][0]["dest"] = "/api/index.php";
+    $data["functions"]["api/index.php"]["runtime"] = "vercel-php@0.4.0";
+    if ($sourcePath=="") $sourcePath = splitlast(splitlast(__DIR__, "/")[0], "/")[0];
+    //echo $sourcePath . "<br>";
+    getEachFiles($file, $sourcePath);
+    $data["files"] = $file;
 
-	//echo json_encode($data, JSON_PRETTY_PRINT) . " ,data<br>";
-	$response = curl("POST", $url, json_encode($data), $header);
-	return $response["body"];
+    //echo json_encode($data, JSON_PRETTY_PRINT) . " ,data<br>";
+    $response = curl("POST", $url, json_encode($data), $header);
+    $result = json_decode($response["body"], true);
+    $result['status'] = $result['id'];
+    return json_encode($result);
 }
 
 function getEachFiles(&$file, $base, $path = "")
@@ -321,13 +323,13 @@ function getEachFiles(&$file, $base, $path = "")
     while($filename=readdir($handler)) {
         if($filename != '.' && $filename != '..' && $filename != '.git'){
             $fromfile = path_format($base . "/" . $path . "/" . $filename);
-		//echo $fromfile . "<br>";
+        //echo $fromfile . "<br>";
             if(is_dir($fromfile)){// 如果读取的某个对象是文件夹，则递归
                 $response = getEachFiles($file, $base, path_format($path . "/" . $filename));
                 if (api_error(setConfigResponse($response))) return $response;
             }else{
-		    $tmp['file'] = path_format($path . "/" . $filename);
-		    $tmp['data'] = file_get_contents($fromfile);
+                $tmp['file'] = path_format($path . "/" . $filename);
+                $tmp['data'] = file_get_contents($fromfile);
                 $file[] = $tmp;
             }
         }
@@ -379,9 +381,25 @@ function OnekeyUpate($auth = 'qkqpttgf', $project = 'OneManager-php', $branch = 
             break;
         }
     }
-	//echo $outPath . "<br>";
+    //echo $outPath . "<br>";
     //error_log1($outPath);
     if ($outPath=='') return '{"error":{"message":"no outpath"}}';
 
     return VercelUpdate(getConfig('HerokuappId'), getConfig('APIKey'), $outPath);
+}
+
+function WaitFunction($deployid) {
+    $header["Authorization"] = "Bearer " . getConfig('APIKey');
+    $header["Content-Type"] = "application/json";
+    $url = "https://api.vercel.com/v11/now/deployments/" . $deployid;
+    $response = curl("GET", $url, "", $header);
+    if ($response['stat']==200) {
+        $result = json_decode($response['body'], true);
+        if ($result['readyState']=="READY") return true;
+        if ($result['readyState']=="ERROR") return $response;
+        return false;
+    } else {
+        $response['body'] .= $url;
+        return $response;
+    }
 }
