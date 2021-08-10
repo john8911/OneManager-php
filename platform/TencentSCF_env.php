@@ -140,13 +140,6 @@ function setConfig($arr, $disktag = '')
     return $response;
 }
 
-function WaitSCFStat()
-{
-    $trynum = 0;
-    while( json_decode(getfunctioninfo($_SERVER['function_name'], $_SERVER['Region'], $_SERVER['namespace'], getConfig('SecretId'), getConfig('SecretKey')),true)['Response']['Status']!='Active' ) echo '
-'.++$trynum;
-}
-
 function install()
 {
     global $constStr;
@@ -462,4 +455,12 @@ function OnekeyUpate($auth = 'qkqpttgf', $project = 'OneManager-php', $branch = 
 function setConfigResponse($response)
 {
     return json_decode( $response, true )['Response'];
+}
+
+function WaitFunction() {
+    //$trynum = 0;
+    //while( json_decode(getfunctioninfo($_SERVER['function_name'], $_SERVER['Region'], $_SERVER['namespace'], getConfig('SecretId'), getConfig('SecretKey')),true)['Response']['Status']!='Active' ) echo '
+//'.++$trynum;
+    if ( json_decode(getfunctioninfo($_SERVER['function_name'], $_SERVER['Region'], $_SERVER['namespace'], getConfig('SecretId'), getConfig('SecretKey')),true)['Response']['Status']=='Active' ) return true;
+    else return false;
 }
